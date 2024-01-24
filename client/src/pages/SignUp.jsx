@@ -3,11 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function SignUp() {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({});
 
   const handleChange = (e) => {
     setFormData({
@@ -15,11 +11,19 @@ export default function SignUp() {
       [e.target.name]: e.target.value,
     });
   };
+  console.log(formData);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your signup logic here using the formData
-    console.log("Form submitted with data:", formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // prevent refreshing the page when submitting the form
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    console.log(data);
   };
 
   return (
