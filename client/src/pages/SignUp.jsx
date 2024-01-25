@@ -1,9 +1,10 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -11,24 +12,60 @@ export default function SignUp() {
       [e.target.name]: e.target.value,
     });
   };
-  console.log(formData);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // prevent refreshing the page when submitting the form
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    console.log(data);
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Sign up failed");
+      }
+
+      console.log(data);
+      setFormData({});
+      setLoading(false);
+
+      // Show success alert
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "You have successfully signed up.",
+      });
+    } catch (err) {
+      setLoading(false);
+
+      // Check if the error message contains the duplicate key error
+      if (err.message.includes("duplicate key error collection")) {
+        // Show a specific error message for duplicate username
+        Swal.fire({
+          icon: "error",
+          title: "Username Already Exists",
+          text: "The username you entered is already in use. Please choose a different username.",
+        });
+      } else {
+        // Show a generic error message for other errors
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: err.message || "Sign up failed. Please try again.",
+        });
+      }
+    }
   };
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
-      <div className='bg-white rounded-2xl -mt-28 p-8  shadow-xl w-full max-w-md'>
+      <div className='bg-white rounded-2xl -mt-28 p-8 shadow-xl w-full max-w-md'>
         <h2 className='text-3xl font-extrabold text-center mb-6 text-blue-600'>
           Sign Up
         </h2>
@@ -44,7 +81,7 @@ export default function SignUp() {
               type='text'
               id='username'
               name='username'
-              value={formData.username}
+              value={formData.username || ""}
               onChange={handleChange}
               className='w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500'
               placeholder='Enter your username'
@@ -59,7 +96,7 @@ export default function SignUp() {
               type='email'
               id='email'
               name='email'
-              value={formData.email}
+              value={formData.email || ""}
               onChange={handleChange}
               className='w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500'
               placeholder='Enter your email'
@@ -77,7 +114,7 @@ export default function SignUp() {
               type='password'
               id='password'
               name='password'
-              value={formData.password}
+              value={formData.password || ""}
               onChange={handleChange}
               className='w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500'
               placeholder='Enter your password'
@@ -86,9 +123,12 @@ export default function SignUp() {
           </div>
           <button
             type='submit'
-            className='w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:border-blue-700'
+            className={`w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none ${
+              loading ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-600"
+            }`}
+            disabled={loading}
           >
-            Sign Up
+            {loading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
         <p className='mt-4 text-center text-gray-600'>
