@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -41,6 +42,9 @@ export default function SignUp() {
         title: "Success!",
         text: "You have successfully signed up.",
       });
+
+      // Redirect to the signin page
+      navigate("/signin");
     } catch (err) {
       setLoading(false);
 

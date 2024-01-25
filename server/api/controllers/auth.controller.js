@@ -30,9 +30,10 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     //seperate password from the rest of the user's data(not to be sent to the client again.because its not safe)
     const { password: hashedPassword, ...rest } = validUser._doc;
+    const expiryDate = new Date(Date.now() + 3600000); // cookie for one hour
 
     res
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, { httpOnly: true, expires: expiryDate })
       .status(200)
       .json(rest);
   } catch (error) {

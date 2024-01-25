@@ -2,11 +2,19 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
+  console.log(loading, error);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -18,8 +26,7 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -30,28 +37,26 @@ export default function SignIn() {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || "Signin failed");
+      if (data.success === false) {
+        dispatch(signInFailure(data));
+        return Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: data.message || "Signin failed. Please try again.",
+        });
       }
-
-      console.log(data);
-      setFormData({});
-      setLoading(false);
-
-      // Show success alert or redirect to another page
+      dispatch(signInSuccess(data));
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: "You have successfully signed in.",
+        text: "Signin successful.",
       });
-
-      // Redirect to the home page
-      navigate("/");
-    } catch (err) {
-      setLoading(false);
+      //navigate("/");
+    } catch (error) {
+      dispatch(signInFailure(error));
 
       // Check if the error message contains the duplicate key error
-      if (err.message.includes("duplicate key error collection")) {
+      if (error.message.includes("duplicate key error collection")) {
         // Show a specific error message for duplicate username
         Swal.fire({
           icon: "error",
@@ -63,7 +68,7 @@ export default function SignIn() {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: err.message || "Signin failed. Please try again.",
+          text: error.message || "Signin failed. Please try again.",
         });
       }
     }
@@ -124,6 +129,9 @@ export default function SignIn() {
           <Link to='/signup' className='text-blue-500 hover:underline'>
             Sign Up
           </Link>
+        </p>
+        <p className='text-red-700 mt-5 text-center'>
+          {error ? error.message || "Something went wrong. ." : ""}
         </p>
       </div>
     </div>
