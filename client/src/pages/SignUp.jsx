@@ -1,6 +1,8 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -134,6 +136,7 @@ export default function SignUp() {
           >
             {loading ? "Signing Up..." : "Sign Up"}
           </button>
+          <OAuth />
         </form>
         <p className='mt-4 text-center text-gray-600'>
           Already have an account?{" "}

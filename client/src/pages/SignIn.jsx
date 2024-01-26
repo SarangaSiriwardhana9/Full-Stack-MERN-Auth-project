@@ -8,6 +8,7 @@ import {
   signInFailure,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -51,7 +52,7 @@ export default function SignIn() {
         title: "Success!",
         text: "Signin successful.",
       });
-      //navigate("/");
+      navigate("/");
     } catch (error) {
       dispatch(signInFailure(error));
 
@@ -116,13 +117,14 @@ export default function SignIn() {
           </div>
           <button
             type='submit'
-            className={`w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none ${
+            className={`w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none hover:opacity-95 ${
               loading ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-600"
             }`}
             disabled={loading}
           >
             {loading ? "Signing In..." : "Sign In"}
           </button>
+          <OAuth />
         </form>
         <p className='mt-4 text-center text-gray-600'>
           Dont have an account?{" "}
