@@ -1,8 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Header() {
+  const { currentUser } = useSelector((state) => state.user);
   return (
     /* responsive hedder that including logo  home page, about page Sign in button */
     <header className='text-gray-600 body-font'>
@@ -17,8 +19,16 @@ export default function Header() {
           <Link to='/about' className='mr-5 hover:text-gray-900'>
             About
           </Link>
-          <Link to='/signin' className='mr-5 hover:text-gray-900'>
-            Sign In
+          <Link to='/profile' className='mr-5 hover:text-gray-900'>
+            {currentUser ? (
+              <img
+                src={currentUser.profilePicture}
+                alt='profile'
+                className='h-7 w-7 rounded-full object-cover'
+              />
+            ) : (
+              <li>Sign In</li>
+            )}
           </Link>
         </nav>
       </div>
