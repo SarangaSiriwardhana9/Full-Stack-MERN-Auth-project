@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; // Updated import
 import {
   getDownloadURL,
   getStorage,
@@ -8,14 +8,18 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice";
 
 export default function Profile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch(); // Updated to useDispatch
+  const { currentUser,loading,error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [image, setImage] = useState(undefined);
   const [imagePresent, setImagePresent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [updateSuccess,setUpdateSuccess]=useState(false)
+
 
   useEffect(() => {
     if (image) {
@@ -48,13 +52,42 @@ export default function Profile() {
     );
   };
 
+  const handleOnChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data));
+      } else {
+        dispatch(updateUserSuccess(data));
+        setUpdateSuccess(true)
+      }
+    } catch (error) {
+      dispatch(updateUserFailure(error));
+    }
+  }
+
+
+
   return (
     <div className='flex justify-center items-center h-screen bg-gray-100'>
       <div className='bg-white p-8 rounded-md shadow-lg w-full max-w-md'>
         <h1 className='text-3xl font-extrabold text-center mb-6 text-blue-600'>
           Your Profile
         </h1>
-        <form className='mb-8'>
+        <form onSubmit={handleSubmit} className='mb-8'>
           <div className='flex justify-center items-center mb-6'>
             {/* Firebase Storage rules
               allow read;
@@ -100,6 +133,7 @@ export default function Profile() {
               placeholder='Username'
               defaultValue={currentUser.username}
               className='w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500'
+              onChange={handleOnChange}
             />
           </div>
           <div className='mb-4'>
@@ -109,6 +143,7 @@ export default function Profile() {
               placeholder='Email'
               defaultValue={currentUser.email}
               className='w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500'
+              onChange={handleOnChange}
             />
           </div>
           <div className='mb-4'>
@@ -117,6 +152,7 @@ export default function Profile() {
               id='password'
               placeholder='Password'
               className='w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500'
+              onChange={handleOnChange}
             />
           </div>
           {/* button for update with hover animation */}
@@ -124,7 +160,7 @@ export default function Profile() {
             type='submit'
             className='w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:border-blue-700 transition duration-300'
           >
-            Update
+            {loading ? 'Loading...' : 'Update'}
           </button>
         </form>
         <div className='flex justify-between'>
@@ -137,7 +173,14 @@ export default function Profile() {
             Logout
           </span>
         </div>
+          <p className="text-green-700 mt-5">
+        {error && "somthing went wrong" }
+      </p>
+      <p className="text-green-700 mt-5">
+        {updateSuccess && "User is updated successfully " }
+      </p>
       </div>
+    
     </div>
   );
 }
