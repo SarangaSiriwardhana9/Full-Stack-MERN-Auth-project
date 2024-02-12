@@ -1,6 +1,6 @@
 # MERN Authentication Project
 
-| Image 1 | Image 2 |
+|  | |
 |---------|---------|
 | ![Screenshot 2024-02-12 235120](https://github.com/SarangaSiriwardhana9/Full-Stack-MERN-Auth-project/assets/99233703/4f4b035a-638a-4613-9146-7622e54d06b4) | ![5](https://github.com/SarangaSiriwardhana9/Full-Stack-MERN-Auth-project/assets/99233703/bd9787a2-66ef-4021-8911-0b8b65765708) |
 | ![4](https://github.com/SarangaSiriwardhana9/Full-Stack-MERN-Auth-project/assets/99233703/e26ed66a-f88c-4639-8ed9-afd1191ab7fb) | ![2](https://github.com/SarangaSiriwardhana9/Full-Stack-MERN-Auth-project/assets/99233703/18764273-0dfe-4736-9804-aa58b6cf4004) |
