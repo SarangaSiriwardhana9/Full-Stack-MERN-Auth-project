@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux"; // Updated import
+import { useSelector, useDispatch } from "react-redux"; 
+import { Link, useNavigate } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -8,10 +9,11 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { updateUserStart, updateUserSuccess, updateUserFailure,deleteUserStart,deleteUserSuccess,deleteUserFailure } from "../redux/user/userSlice";
+import { updateUserStart, updateUserSuccess, updateUserFailure,deleteUserStart,deleteUserSuccess,deleteUserFailure,signOut } from "../redux/user/userSlice";
 
 export default function Profile() {
-  const dispatch = useDispatch(); // Updated to useDispatch
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { currentUser,loading,error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [image, setImage] = useState(undefined);
@@ -95,7 +97,17 @@ export default function Profile() {
       dispatch(deleteUserFailure(error));
     }
   };
-
+  const handleSignOut = async () => {
+    try {
+      await fetch('/api/auth/signout');
+      dispatch(signOut())
+      navigate("/");
+      
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className='flex justify-center items-center h-screen bg-gray-100'>
@@ -180,12 +192,14 @@ export default function Profile() {
           </button>
         </form>
         <div className='flex justify-between'>
+
           {/* delete account with hover animation */}
           <span onClick={handleDeleteAccount} className='text-red-500 cursor-pointer hover:underline'>
             Delete Account
           </span>
+
           {/* logout with hover animation */}
-          <span className='text-blue-500 cursor-pointer hover:underline'>
+          <span  onClick={handleSignOut} className='text-blue-500 cursor-pointer hover:underline'>
             Logout
           </span>
         </div>
