@@ -9,6 +9,10 @@
 
 This is a full-stack authentication project built using the MERN (MongoDB, Express.js, React.js, Node.js) stack. The project includes features like user signup, login, Google OAuth authentication, profile updating (including image upload using Firebase), JWT authentication, and password hashing.
 
+## Demo
+
+Check out the [Demo](https://mern-auth-project-deployed.onrender.com) of MRKing Cafe!
+
 ## Features
 
 - User signup with email and password
