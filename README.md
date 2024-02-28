@@ -15,13 +15,13 @@ Check out the [Demo](https://mern-auth-project-deployed.onrender.com) of MRKing 
 
 ## Features
 
-- User signup with email and password
-- User login with email and password
-- Google OAuth authentication
-- Profile updating including image upload using Firebase storage
-- JWT authentication for secure routes
-- Password hashing for user security
-- Easily customizable and extendable for your own projects
+- User signup with email and password.
+- User login with email and password.
+- Google OAuth authentication.
+- Profile updating including image upload using Firebase storage.
+- JWT authentication for secure routes.
+- Password hashing for user security.
+- Easily customizable and extendable for your own projects.
 
 ## Installation
 
