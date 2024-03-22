@@ -11,7 +11,7 @@ This is a full-stack authentication project built using the MERN (MongoDB, Expre
 
 ## Demo
 
-Check out the [Demo](https://mern-auth-project-deployed.onrender.com) of MRKing Cafe!
+Check out the [Demo](https://mern-auth-project-deployed.onrender.com) of Auth Project !
 
 ## Features
 
